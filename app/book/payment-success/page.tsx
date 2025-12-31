@@ -23,6 +23,9 @@ export default function PaymentSuccess({
                   <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                     Thank you for your booking. We've sent a confirmation email to your emailwith all the details.
                   </p>
+                  <p>Payment Amount: ${amount}</p>
+                  <p>Payment Status: Successful</p>
+                  <p>Payment Id: 1234567890 </p>
                   <Button variant="snow" size="default" onClick={() => router.push("/")}>Back to Home</Button>
 
               
