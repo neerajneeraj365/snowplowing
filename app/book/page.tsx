@@ -63,13 +63,13 @@ const BookingPage = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "sdv",
-      lastName: "vsd",
-      email: "vsd@vsd.com",
-      phone: "1234567890",
-      address: "1234567890",
-      service: "snow-plowing",
-      notes: "sjd",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      service: "",
+      notes: "",
     },
   });
 
@@ -78,14 +78,8 @@ const BookingPage = () => {
   const onSubmit =  (data: FormData) => {
     setIsSubmitting(true);
     
-    
-    
-    toast.success("Booking confirmed! You will receive a confirmation email shortly.");
-    console.log("Booking data:", data);
-    
-    // In production, this would save to database and process payment
-    setStep(3);
     setIsSubmitting(false);
+    form.reset();
   };
 
   const handleNext = async () => {
