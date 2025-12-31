@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  UserIcon,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
@@ -183,7 +184,12 @@ const AdminDashboard = () => {
         <header className="bg-foreground text-background py-4">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+              <Link href="/" className="block md:hidden">
+                <Button variant="ghost" className="text-background hover:text-primary">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                </Button>
+              </Link>
                 <Link href="/" className="flex items-center gap-2">
                   <div className="w-10 h-10 rounded-lg bg-gradient-hero flex items-center justify-center">
                     <Snowflake className="w-6 h-6 text-primary-foreground" />
@@ -193,9 +199,11 @@ const AdminDashboard = () => {
                   </span>
                 </Link>
                 <span className="text-background/60">|</span>
-                <span className="font-medium">Admin Dashboard</span>
+                <span className="font-medium">Dashboard</span>
               </div>
-              <Link href="/">
+              
+
+              <Link href="/" className="hidden md:block">
                 <Button variant="ghost" className="text-background hover:text-primary">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Site
@@ -208,10 +216,10 @@ const AdminDashboard = () => {
         <main className="container mx-auto px-4 py-8">
           {/* Stats Cards */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-card rounded-xl p-6 shadow-soft">
+            <div className="bg-zinc-100 rounded-xl p-6 shadow-soft">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Appointments</p>
@@ -220,10 +228,10 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-soft">
+            <div className="bg-zinc-100 rounded-xl p-6 shadow-soft">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-winter/10 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-winter" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-sky-500" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Scheduled</p>
@@ -232,22 +240,22 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-soft">
+            <div className="bg-zinc-100 rounded-xl p-6 shadow-soft">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-primary" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <DollarSign className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold text-foreground">${stats.totalRevenue}</p>
+                  <p className="text-2xl font-bold text-primary">${stats.totalRevenue}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card rounded-xl p-6 shadow-soft">
+            <div className="bg-zinc-100 rounded-xl p-6 shadow-soft">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center">
-                  <Users className="w-6 h-6 text-accent" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center">
+                  <Users className="w-6 h-6 text-primary" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Unpaid</p>
@@ -258,7 +266,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Appointments Table */}
-          <div className="bg-card rounded-xl shadow-soft overflow-hidden">
+          <div className=" rounded-xl shadow-soft overflow-hidden">
             <div className="p-6 border-b border-border">
               <div className="flex flex-col lg:flex-row gap-4 justify-between">
                 <h2 className="text-xl font-bold text-foreground">Appointments</h2>

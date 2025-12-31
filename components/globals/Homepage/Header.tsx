@@ -55,9 +55,9 @@ const Header = () => {
                 {link.label}
               </a>
             ))}
-            <Link href="/admin-123-access">
-              <Button variant="link" size="sm">Admin</Button>
-            </Link>
+            <Link href="/admin-123-access" onClick={() => setIsMenuOpen(false)} className="text-destructive hover:text-destructive/80 font-medium transition-colors duration-300">
+                  Admin
+                </Link>
             <Link href="/book">
               <Button variant="snow" size="default">Book Now</Button>
             </Link>
@@ -86,8 +86,8 @@ const Header = () => {
                   {link.label}
                 </a>
               ))}
-                <Link href="/admin-123-access" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="link" className="w-full justify-start">Admin</Button>
+                <Link href="/admin-123-access" onClick={() => setIsMenuOpen(false)} className="text-destructive hover:text-destructive/80 font-medium transition-colors duration-300">
+                  Admin
                 </Link>
               <Link href="/book" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="default" className="w-full">Book Now</Button>
