@@ -3,9 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.gradient-bg {
-  background: linear-gradient(to right, bg-sky-500, bg-emerald-500);
-}
 
 
 @theme inline {

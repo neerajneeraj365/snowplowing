@@ -19,7 +19,7 @@ import Footer from "@/components/globals/Homepage/Footer";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-import CheckoutPage from "@/components/CheckoutPage";
+import CheckoutPage from "@/components/globals/CheckoutPage";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -27,6 +27,9 @@ import { loadStripe } from "@stripe/stripe-js";
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
 }
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters").max(50),
@@ -42,14 +45,14 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const services = [
-  { value: "snow-plowing", label: "Snow Plowing", price: 75 },
-  { value: "snow-plowing-seasonal", label: "Snow Plowing (Seasonal Contract)", price: 500 },
-  { value: "ice-management", label: "Ice Management / Salting", price: 50 },
-  { value: "landscaping-design", label: "Landscaping Design Consultation", price: 150 },
-  { value: "lawn-maintenance", label: "Lawn Maintenance (Per Visit)", price: 65 },
-  { value: "lawn-maintenance-monthly", label: "Lawn Maintenance (Monthly)", price: 200 },
-  { value: "tree-care", label: "Tree & Shrub Care", price: 100 },
-  { value: "irrigation", label: "Irrigation System Service", price: 125 },
+  { value: "snow-plowing", label: "Snow Plowing", amount: 75.99 },
+  { value: "snow-plowing-seasonal", label: "Snow Plowing (Seasonal Contract)", amount: 500 },
+  { value: "ice-management", label: "Ice Management / Salting", amount: 50 },
+  { value: "landscaping-design", label: "Landscaping Design Consultation", amount: 150 },
+  { value: "lawn-maintenance", label: "Lawn Maintenance (Per Visit)", amount: 65 },
+  { value: "lawn-maintenance-monthly", label: "Lawn Maintenance (Monthly)", amount: 200 },
+  { value: "tree-care", label: "Tree & Shrub Care", amount: 100 },
+  { value: "irrigation", label: "Irrigation System Service", amount: 125 },
 ];
 
 const BookingPage = () => {
@@ -60,23 +63,22 @@ const BookingPage = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      service: "",
-      notes: "",
+      firstName: "sdv",
+      lastName: "vsd",
+      email: "vsd@vsd.com",
+      phone: "1234567890",
+      address: "1234567890",
+      service: "snow-plowing",
+      notes: "sjd",
     },
   });
 
   const selectedService = services.find(s => s.value === form.watch("service"));
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit =  (data: FormData) => {
     setIsSubmitting(true);
     
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     
     toast.success("Booking confirmed! You will receive a confirmation email shortly.");
     console.log("Booking data:", data);
@@ -114,7 +116,7 @@ const BookingPage = () => {
 
           {/* Progress Steps */}
           <div className="flex items-center justify-center gap-4 mb-12">
-            {[1, 2, 3].map((s) => (
+            {[1, 2].map((s) => (
               <div key={s} className="flex items-center gap-2">
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all",
@@ -128,7 +130,7 @@ const BookingPage = () => {
                 )}>
                   {s === 1 ? "Details" : s === 2 ? "Payment" : "Confirmed"}
                 </span>
-                {s < 3 && <div className="w-12 h-0.5 bg-border" />}
+                {s < 2 && <div className="w-12 h-0.5 bg-border" />}
               </div>
             ))}
           </div>
@@ -235,7 +237,7 @@ const BookingPage = () => {
                               <SelectContent>
                                 {services.map((service) => (
                                   <SelectItem key={service.value} value={service.value}>
-                                    {service.label} - ${service.price}
+                                    {service.label} - ${service.amount}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -337,7 +339,7 @@ const BookingPage = () => {
                       <div className="border-t border-border pt-3 mt-3">
                         <div className="flex justify-between text-lg">
                           <span className="font-semibold">Total</span>
-                          <span className="font-bold text-primary">${selectedService?.price || 0}</span>
+                          <span className="font-bold text-primary">${selectedService?.amount || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -345,54 +347,45 @@ const BookingPage = () => {
 
                   {/* Payment Form Placeholder */}
                   <div className="bg-muted/50 border-2 border-dashed border-border rounded-xl p-8 text-center mb-6">
-                    <CreditCard className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    {/* <CreditCard className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <h4 className="font-semibold text-foreground mb-2">Secure Payment</h4>
                     <p className="text-sm text-muted-foreground mb-4">
                       Payment integration will be enabled once you connect to Lovable Cloud with Stripe.
                     </p>
                     <p className="text-xs text-muted-foreground">
                       For now, click "Confirm Booking" to simulate a successful payment.
-                    </p>
+                    </p> */}
+                    {
+                        selectedService && (
+                            <Elements
+                                stripe={stripePromise}
+                                options={{
+                                    mode: "payment",
+                                    amount: convertToSubcurrency(selectedService.amount),
+                                    currency: "cad",
+                                }}
+                            >
+                                <CheckoutPage amount={selectedService.amount} onSuccess={() => setStep(3)} />
+                            </Elements>
+                        )
+                    }
+                    
                   </div>
 
-                  <Button 
+                  {/* <Button 
                     variant="snow" 
                     size="lg" 
                     className="w-full" 
                     onClick={form.handleSubmit(onSubmit)}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Processing..." : `Confirm Booking - $${selectedService?.price || 0}`}
-                  </Button>
+                    {isSubmitting ? "Processing..." : `Confirm Booking - $${selectedService?.amount || 0}`}
+                  </Button> */}
                 </>
               )}
 
-              {/* Step 3: Confirmation */}
-              {step === 3 && (
-                <div className="text-center py-8">
-                  <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-6">
-                    <Check className="w-10 h-10 text-primary-foreground" />
-                  </div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Booking Confirmed!</h1>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                    Thank you for your booking. We've sent a confirmation email to <span className="font-medium text-foreground">{form.getValues("email")}</span> with all the details.
-                  </p>
-
-                  <div className="bg-muted rounded-xl p-6 mb-8 text-left">
-                    <h3 className="font-semibold text-foreground mb-4">Booking Details</h3>
-                    <div className="space-y-2 text-sm">
-                      <p><span className="text-muted-foreground">Service:</span> {selectedService?.label}</p>
-                      <p><span className="text-muted-foreground">Date:</span> {form.getValues("date") ? format(form.getValues("date"), "PPP") : ""}</p>
-                      <p><span className="text-muted-foreground">Address:</span> {form.getValues("address")}</p>
-                      <p><span className="text-muted-foreground">Amount Paid:</span> ${selectedService?.price}</p>
-                    </div>
-                  </div>
-
-                  <Button variant="snow" size="default" onClick={() => router.push("/")}>
-                    Back to Home
-                  </Button>
-                </div>
-              )}
+              
+              
             </div>
           </div>
         </div>
