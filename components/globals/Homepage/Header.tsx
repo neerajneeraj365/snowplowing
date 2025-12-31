@@ -55,9 +55,9 @@ const Header = () => {
                 {link.label}
               </a>
             ))}
-            <Link href="/admin">
+            {/* <Link href="/admin">
               <Button variant="ghost" size="sm">Admin</Button>
-            </Link>
+            </Link> */}
             <Link href="/book">
               <Button variant="snow" size="default">Book Now</Button>
             </Link>
@@ -86,9 +86,9 @@ const Header = () => {
                   {link.label}
                 </a>
               ))}
-              <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start">Admin</Button>
-              </Link>
+                {/* <Link href="/admin" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">Admin</Button>
+                </Link> */}
               <Link href="/book" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="default" className="w-full">Book Now</Button>
               </Link>

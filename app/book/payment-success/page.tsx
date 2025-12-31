@@ -26,7 +26,7 @@ export default function PaymentSuccess({
                   <p>Payment Amount: ${amount}</p>
                   <p>Payment Status: Successful</p>
                   <p>Payment Id: 1234567890 </p>
-                  <Button variant="snow" size="default" onClick={() => router.push("/")}>Back to Home</Button>
+                  <Button variant="snow" size="default" onClick={() => router.push("/")} className="mt-4">Back to Home</Button>
 
               
                 </div>
