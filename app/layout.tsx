@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Neeraj", url: "https://codewithnik.vercel.app" }],
   creator: "Neeraj",
   publisher: "Neeraj",
+  icons: {
+    icon: "/public/icon/snow.png",
+  },
 };
 
 export default function RootLayout({

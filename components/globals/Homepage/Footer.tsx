@@ -31,7 +31,7 @@ const Footer = () => {
                 <Twitter className="w-5 h-5" />
               </a>
             </div>
-            <p>Website Created by Neeraj</p>
+        
           </div>
 
           {/* Quick Links */}
