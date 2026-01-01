@@ -85,7 +85,7 @@ const Footer = () => {
           <div className="flex gap-6 text-sm">
             <a href="#" className="text-zinc-300/70 hover:text-zinc-200 transition-colors">Privacy Policy</a>
             <a href="#" className="text-zinc-300/70 hover:text-zinc-200 transition-colors">Terms of Service</a>
-            <a href="https://codewithnik.vercel.app" className="text-zinc-300/70 hover:text-zinc-200 transition-colors">Created by Neeraj</a>
+            <a href="#" className="text-zinc-300/70 hover:text-zinc-200 transition-colors">Created by Nik</a>
           </div>
         </div>
       </div>

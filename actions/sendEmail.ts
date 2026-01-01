@@ -46,6 +46,9 @@ export async function sendBookingConfirmationEmail(data: BookingData) {
     // Render React component to HTML string
     const html = await render(emailReact);
 
+    // Get admin email from environment variable or use default
+    const adminEmail = process.env.ADMIN_EMAIL || "neerajbhardwaj5609@gmail.com";
+
     const result = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || "FrostGreenPro <onboarding@resend.dev>",
       to: [data.email],

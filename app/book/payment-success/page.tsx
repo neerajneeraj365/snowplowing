@@ -194,7 +194,7 @@ export default async function SuccessPage({ searchParams }: {
                 )}
               </div>
             </div>
-{/* <CountdownRedirect seconds={10} /> */}
+<CountdownRedirect seconds={15} />
             <Button variant="snow" size="lg" asChild>
               <Link href="/">Back to Home</Link>
             </Button>
