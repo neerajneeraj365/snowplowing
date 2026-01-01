@@ -20,15 +20,6 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 import CheckoutPage from "@/components/globals/CheckoutPage";
-import convertToSubcurrency from "@/lib/convertToSubcurrency";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
-}
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 
 const formSchema = z.object({
@@ -59,7 +50,7 @@ const BookingPage = () => {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,8 +69,14 @@ const BookingPage = () => {
   const onSubmit =  (data: FormData) => {
     setIsSubmitting(true);
     
+    
+    
+    toast.success("Booking confirmed! You will receive a confirmation email shortly.");
+    console.log("Booking data:", data);
+    
+    // In production, this would save to database and process payment
+    setStep(3);
     setIsSubmitting(false);
-    form.reset();
   };
 
   const handleNext = async () => {
@@ -223,7 +220,7 @@ const BookingPage = () => {
                           <FormItem>
                             <FormLabel>Service Type</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
+                              <FormControl className="w-full">
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select a service" />
                                 </SelectTrigger>
@@ -247,7 +244,7 @@ const BookingPage = () => {
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
                             <FormLabel>Preferred Date</FormLabel>
-                            <Popover>
+                            <Popover open={open} onOpenChange={setOpen}>
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
@@ -266,7 +263,11 @@ const BookingPage = () => {
                                 <Calendar
                                   mode="single"
                                   selected={field.value}
-                                  onSelect={field.onChange}
+                                  onSelect={(date) => {
+                                    field.onChange(date);
+                                    setOpen(false);
+                                  }}
+                                  
                                   disabled={(date) => date < new Date()}
                                   initialFocus
                                 />
@@ -351,16 +352,18 @@ const BookingPage = () => {
                     </p> */}
                     {
                         selectedService && (
-                            <Elements
-                                stripe={stripePromise}
-                                options={{
-                                    mode: "payment",
-                                    amount: convertToSubcurrency(selectedService.amount),
-                                    currency: "cad",
-                                }}
-                            >
-                                <CheckoutPage amount={selectedService.amount} onSuccess={() => setStep(3)} />
-                            </Elements>
+                            <CheckoutPage 
+                                amount={selectedService.amount} 
+                                onSuccess={() => setStep(3)} 
+                                firstName={form.getValues("firstName")} 
+                                lastName={form.getValues("lastName")} 
+                                email={form.getValues("email")} 
+                                phone={form.getValues("phone")} 
+                                address={form.getValues("address")} 
+                                service={form.getValues("service")} 
+                                date={form.getValues("date")} 
+                                notes={form.getValues("notes")} 
+                            />
                         )
                     }
                     
@@ -378,7 +381,31 @@ const BookingPage = () => {
                 </>
               )}
 
-              
+{/* {step === 3 && (
+                <div className="text-center py-8">
+                  <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-6">
+                    <Check className="w-10 h-10 text-primary-foreground" />
+                  </div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Booking Confirmed!</h1>
+                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                    Thank you for your booking. We've sent a confirmation email to <span className="font-medium text-foreground">{form.getValues("email")}</span> with all the details.
+                  </p>
+
+                  <div className="bg-muted rounded-xl p-6 mb-8 text-left">
+                    <h3 className="font-semibold text-foreground mb-4">Booking Details</h3>
+                    <div className="space-y-2 text-sm">
+                      <p><span className="text-muted-foreground">Service:</span> {selectedService?.label}</p>
+                      <p><span className="text-muted-foreground">Date:</span> {form.getValues("date") ? format(form.getValues("date"), "PPP") : ""}</p>
+                      <p><span className="text-muted-foreground">Address:</span> {form.getValues("address")}</p>
+                      <p><span className="text-muted-foreground">Amount Paid:</span> ${selectedService?.amount}</p>
+                    </div>
+                  </div>
+
+                  <Button variant="snow" size="lg" onClick={() => router.push("/")}>
+                    Back to Home
+                  </Button>
+                </div>
+              )} */}
               
             </div>
           </div>

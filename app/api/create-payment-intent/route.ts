@@ -4,12 +4,16 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function POST(request: NextRequest) {
   try {
     const { amount } = await request.json();
+    
+    console.log('[API] Creating payment intent for amount:', amount);
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: "cad",
       automatic_payment_methods: { enabled: true },
     });
+
+    console.log('[API] Payment intent created:', paymentIntent.id);
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {

@@ -3,6 +3,10 @@ import snowService from "@/public/snow-service.jpg";
 import landscapingService from "@/public/landscaping-service.jpg";
 import lawnService from "@/public/lawn-service.jpg";
 import Image from "next/image";
+import iceManage from "@/public/ice-manage.jpg";
+import waterSystem from "@/public/water-system.jpg";
+import treeCare from "@/public/tree-care.jpg";
+
 
 const services = [
   {
@@ -31,18 +35,21 @@ const services = [
     title: "Ice Management",
     description: "Salt and sand application to prevent ice buildup. Keep walkways and driveways safe for your family, employees, and visitors.",
     color: "winter",
+    image: iceManage,
   },
   {
     icon: TreePine,
     title: "Tree & Shrub Care",
     description: "Professional pruning, trimming, and removal services. We keep your trees healthy and your property looking manicured.",
     color: "forest",
+    image: treeCare,
   },
   {
     icon: Droplets,
     title: "Irrigation Systems",
     description: "Installation, maintenance, and winterization of irrigation systems. Ensure your landscape stays hydrated efficiently.",
     color: "winter",
+    image: waterSystem,
   },
 ];
 
