@@ -11,7 +11,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
 import { Button } from "@/components/ui/button";
 // import { send } from "@/actions/sendEmail";
-import { EmailTemplate } from "./email-template";
+import { EmailTemplate } from "../../app/book/payment-success/email-template";
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");

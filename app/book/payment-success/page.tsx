@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 
 import { stripe } from '@/lib/stripe'
 import { Check } from 'lucide-react';
@@ -8,6 +9,7 @@ import { format } from 'date-fns';
 import Header from '@/components/globals/Homepage/Header';
 import Footer from '@/components/globals/Homepage/Footer';
 import CountdownRedirect from './countdown';
+import { sendBookingConfirmationEmail } from '@/actions/sendEmail';
 
 const SuccessIcon =
   <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,6 +103,52 @@ export default async function SuccessPage({ searchParams }: {
   const selectedService = serviceValue ? services.find(s => s.value === serviceValue) : null;
   const bookingDate = dateString ? new Date(dateString) : null;
 
+  // Send confirmation email if payment succeeded
+  let emailSent = false;
+  if (status === 'succeeded' && email) {
+    try {
+      const cookieStore = await cookies();
+      const emailSentKey = `email_sent_${paymentIntentId}`;
+      const emailSentCookie = cookieStore.get(emailSentKey);
+
+      // Only send if we haven't sent an email for this payment intent yet
+      if (!emailSentCookie) {
+        // Send email (fire and forget - don't block page render)
+        sendBookingConfirmationEmail({
+          payment_intent: paymentIntentId,
+          amount,
+          firstName,
+          lastName,
+          email,
+          phone,
+          address,
+          service: serviceValue,
+          serviceLabel: selectedService?.label,
+          date: bookingDate ? format(bookingDate, "PPP") : dateString,
+          notes,
+        }).then((result) => {
+          if (result.success) {
+            console.log('Booking confirmation email sent successfully');
+          } else {
+            console.error('Failed to send booking confirmation email:', result.error);
+          }
+        }).catch((error) => {
+          console.error('Error sending confirmation email:', error);
+        });
+
+        emailSent = true; // Mark as sent attempt
+        
+        // Note: In production, you might want to track email sends in a database
+        // to prevent duplicates more reliably across page refreshes
+      } else {
+        emailSent = true; // Email was already sent
+      }
+    } catch (error) {
+      console.error('Error checking email status:', error);
+      // Don't block the page render if there's an error
+    }
+  }
+
   return (
     <div className="min-h-screen bg-muted">
       <Header />
@@ -146,7 +194,7 @@ export default async function SuccessPage({ searchParams }: {
                 )}
               </div>
             </div>
-<CountdownRedirect seconds={10} />
+{/* <CountdownRedirect seconds={10} /> */}
             <Button variant="snow" size="lg" asChild>
               <Link href="/">Back to Home</Link>
             </Button>
